@@ -5,3 +5,5 @@ action on deliberately outdated Python packages, to see how findings show up in 
 and in code scanning, and how they change from one commit to the next.
 
 Nothing here is meant to be used.
+
+The packages in requirements.txt change from commit to commit; some commits change nothing but this file.
