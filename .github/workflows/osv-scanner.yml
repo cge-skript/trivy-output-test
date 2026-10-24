@@ -1,0 +1,19 @@
+# Probe for git-hytta: how Google's OSV-Scanner reports findings through its reusable workflow,
+# which uploads SARIF to code scanning itself.
+name: OSV-Scanner
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  scan:
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+    uses: google/osv-scanner-action/.github/workflows/osv-scanner-reusable.yml@b1d267aea5211fa648d9d442fa64b90dbdcbdd36 # v2.7.0

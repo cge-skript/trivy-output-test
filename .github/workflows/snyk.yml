@@ -1,0 +1,33 @@
+# Probe for git-hytta: how Snyk's Python action reports findings as SARIF uploaded to code
+# scanning. Needs the repository secret SNYK_TOKEN.
+name: Snyk
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  sarif:
+    name: Snyk SARIF to code scanning
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Run Snyk to check for vulnerabilities
+        uses: snyk/actions/python@9adf32b1121593767fc3c057af55b55db032dc04 # v1.0.0
+        # Snyk fails when it finds something, which would skip the upload.
+        continue-on-error: true
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          args: --sarif-file-output=snyk.sarif
+      - name: Upload Snyk scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@9b3254085494b55a0f7c4c2b3d2d52cc712ce370 # v4.39.1
+        with:
+          sarif_file: snyk.sarif
